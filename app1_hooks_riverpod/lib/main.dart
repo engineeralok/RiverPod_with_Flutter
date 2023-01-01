@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -9,28 +12,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(),
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Hooks Riverpod',
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      home: const HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+final currentDateTime = Provider<DateTime>((ref) => DateTime.now());
+
+class HomePage extends ConsumerWidget {
+  const HomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final date = ref.watch(currentDateTime);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Hooks RiverPod'),
+        centerTitle: true,
+        title: const Text(
+          'Flutter Hooks RiverPod',
+        ),
+      ),
+      body: Center(
+        child: Text(
+          "$date \nFull Date =${date.toIso8601String()}",
+          style: Theme.of(context).textTheme.headline4,
+        ),
       ),
     );
   }
